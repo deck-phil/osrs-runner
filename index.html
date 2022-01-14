@@ -2,37 +2,31 @@
   <head>
 	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 	<meta content="utf-8" http-equiv="encoding">
-    <title>Mej's Map</title>
-	<link rel="icon" 
-      type="image/png" 
-      href="images/favicon_world.png"/>
-
+	
 	<link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/leaflet.css"/>
     <link rel="stylesheet" href="css/plugins/leaflet.fullscreen.css"/>
 	<link rel="stylesheet" href="css/plugins/leaflet.MousePosition.css"/>
 	<link rel="stylesheet" href="css/plugins/leaflet.icons.css"/>
-	<link rel="stylesheet" href="css/plugins/leaflet.mapSelector.css"/>
-	<link rel="stylesheet" href="css/plugins/leaflet.mapTemplate.css"/>
 	<link rel="stylesheet" href="css/plugins/leaflet.customZoom.css"/>
-	<link rel="stylesheet" href="css/plugins/leaflet.displays.css"/>
-
-	<script type="module" src="js/MD5.js"></script>
+	<link rel="stylesheet" href="css/plugins/leaflet.navigator.css"/>
+	<link rel="stylesheet" href="css/plugins/leaflet.contextmenu.css"/>
+	
+	
     <script type="module" src="js/leaflet.js"></script>
+	<script type="module" src="js/layers.js"></script>
+	<script type="module" src="js/MD5.js"></script>
 	<script type="module" src="js/plugins/leaflet.fullscreen.js"></script>
 	<script type="module" src="js/plugins/leaflet.zoom.js"></script>
 	<script type="module" src="js/plugins/leaflet.position.js"></script>
 	<script type="module" src="js/plugins/leaflet.plane.js"></script>
-	<script type="module" src="js/plugins/leaflet.displays.js"></script>
-	<script type="module" src="js/plugins/leaflet.urllayers.js"></script>
-	<script type="module" src="js/plugins/leaflet.clickcopy.js"></script>
-	<script type="module" src="js/plugins/leaflet.maplabels.js"></script>
-	
-	<script type="module" src="js/layers.js"></script>
-	<script type="module" src="js/main/main.js"></script>
-	
-	</head>
+	<script type="module" src="js/plugins/leaflet.navigator.js"></script>
+	<script type="module" src="js/plugins/leaflet.contextmenu.js"></script>
+
+  	<script type="module" src="wasm-pathfinder/pkg/wasm_pathfinder.js"></script>
+	<script type="module" src="js/main/main_osrs_pathfinding.js"></script>
+</head>
   <body>
-     <div id="map"></div>    
+	<div id="map"></div>  
   </body>
 </html>
