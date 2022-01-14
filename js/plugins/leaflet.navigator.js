@@ -294,6 +294,18 @@ import "../leaflet.js";
                 });
             },
 
+            moveStartMarkerTo: function(e) {
+                this.startMarker.dragStart()
+                this.startMarker.setLatLng(e.latlng); 
+                this.startMarker.plant();
+            },
+
+            moveEndMarkerTo: function(e) {
+                this.endMarker.dragStart()
+                this.endMarker.setLatLng(e.latlng); 
+                this.endMarker.plant();
+            },
+
             updatePath: function () {
                 if (this.path) {
                     this.path.forEach(section => section.remove());
@@ -317,6 +329,7 @@ import "../leaflet.js";
                     if (features[0] && features[1]) {
                         this.options.algorithm(startPlane, start.lng, start.lat, features[0], endPlane, end.lng, end.lat, features[1])
                         .then(solution => {
+                            console.log(solution)
                             this.drawPath.bind(this)(solution);
                             this.drawNavigationPanels.bind(this)(solution);
                         }).catch(err => {
@@ -428,7 +441,7 @@ import "../leaflet.js";
                 let key = this._generateDataKey(plane, latLng);
                 let localX = latLng.lng & 0x3F;
                 let localY = latLng.lat & 0x3F;
-                return fetch(`wasm-pathfinder-data/collisions/-1/${key}.json`)
+                return fetch(`wasm-osrs-pathfinder-data/collisions/-1/${key}.json`)
                 .then(response => response.json())
                 .then(data => data[localX][localY].f)
                 .catch(() => undefined);

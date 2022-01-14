@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="css/plugins/leaflet.icons.css"/>
 	<link rel="stylesheet" href="css/plugins/leaflet.customZoom.css"/>
 	<link rel="stylesheet" href="css/plugins/leaflet.navigator.css"/>
+	<link rel="stylesheet" href="css/plugins/leaflet.contextmenu.css"/>
 	
 	
     <script type="module" src="js/leaflet.js"></script>
@@ -20,10 +21,12 @@
 	<script type="module" src="js/plugins/leaflet.position.js"></script>
 	<script type="module" src="js/plugins/leaflet.plane.js"></script>
 	<script type="module" src="js/plugins/leaflet.navigator.js"></script>
+	<script type="module" src="js/plugins/leaflet.contextmenu.js"></script>
+	
   	<script type="module" src="wasm-pathfinder/pkg/wasm_pathfinder.js"></script>
 	<script type="module" src="js/main/main_pathfinding.js"></script>
 </head>
   <body>
-	<div id="map"></div>  
+	<div id="map" oncontextmenu="return false;"></div>  
   </body>
 </html>

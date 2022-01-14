@@ -4,6 +4,18 @@ import * as wasm_pathfinder from '../../wasm-pathfinder/pkg/wasm_pathfinder.js';
 //Export wasm to global scope so it can be used from the dev console
 window.wasm_pathfinder = wasm_pathfinder;
 
+var pathfinder = L.dynamicNavigator({
+    initStart: [0, 3220, 3218],
+    initEnd: [0, 3339, 3230],
+    init: wasm_pathfinder.default,
+    algorithm: wasm_pathfinder.race,
+    tileUrl: 'layers_rs3/mapsquares/-1/{zoom}/{plane}_{x}_{y}.png',
+    errorTileUrl: 'TODO',
+    shadowTileUrl: 'layers_rs3/shadow_squares/-1/{zoom}/{plane}_{x}_{y}.png',
+    shadowErrorTileUrl: 'layers_rs3/shadow_squares/shadow_tile.png',
+    messageBox: true
+})
+
 var runescape_map = L.gameMap('map', {
     renderer: L.canvas(),
     crs: L.CRS.Simple,
@@ -23,6 +35,19 @@ var runescape_map = L.gameMap('map', {
     maxPlane: 3,
     doubleClickZoom: false,
     showMapBorder: true,
+
+    // Context Menu
+    contextmenu: true,
+    contextmenuWidth: 140,
+	contextmenuItems: [{
+	    text: 'Start here',
+	    callback: pathfinder.moveStartMarkerTo.bind(pathfinder)
+	},
+    {
+	    text: 'End here',
+	    callback: pathfinder.moveEndMarkerTo.bind(pathfinder)
+	}]
+    
 });
 
 var main = L.tileLayer.main('layers_rs3/mapsquares/{mapId}/{zoom}/{plane}_{x}_{y}.png', {
@@ -59,17 +84,7 @@ var teleports = L.teleports({
     filterFn: item => item.type === "teleport"
 });
 
-let pathfinder = L.dynamicNavigator({
-    initStart: [0, 3220, 3218],
-    initEnd: [0, 3339, 3230],
-    init: wasm_pathfinder.default,
-    algorithm: wasm_pathfinder.race,
-    tileUrl: 'layers_rs3/mapsquares/-1/{zoom}/{plane}_{x}_{y}.png',
-    errorTileUrl: 'TODO',
-    shadowTileUrl: 'layers_rs3/shadow_squares/-1/{zoom}/{plane}_{x}_{y}.png',
-    shadowErrorTileUrl: 'layers_rs3/shadow_squares/shadow_tile.png',
-    messageBox: true
-}).addTo(runescape_map);
+pathfinder.addTo(runescape_map);
 
 L.control.layers({}, {
     zones: zones,

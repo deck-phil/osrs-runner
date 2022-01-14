@@ -1976,7 +1976,6 @@ import './leaflet.js';
 
             let popUp = this.createPopup(item.mode, this._map, item);
             startMarker.bindPopup(popUp);
-
             if ("destinations" in item) {
                 startMarker.on('mouseover', () => {
                     item.destinations.forEach(destination => {
@@ -1986,10 +1985,10 @@ import './leaflet.js';
                             }
 
                         });
-                        let destmarker = L.marker([destination.y + 0.5, destination.x + 0.5], {
+                        var destmarker = L.marker([destination.y + 0.5, destination.x + 0.5], {
                             icon: new VertexIcon
                         }).addTo(this._map);
-                        window.setTimeout(destmarker.remove.bind(destmarker), 60000);
+                        setTimeout(() => this._map.removeLayer(destmarker), 1000);
 
                         let points = [[item.start.y + 0.5, item.start.x + 0.5], [destination.y + 0.5, destination.x + 0.5]];
 
@@ -1997,7 +1996,7 @@ import './leaflet.js';
                             color: 'white'
                         });
                         this._map.addLayer(travel);
-                        window.setTimeout(travel.remove.bind(travel), 60000);
+                        setTimeout(() => this._map.removeLayer(travel), 1000);
                         travel.on("click", () => {
                             this._map.setPlane(destination.p);
                             this._map.flyTo([destination.y + 0.5, destination.x + 0.5])
@@ -2102,4 +2101,345 @@ import './leaflet.js';
     L.varbit = function (options) {
         return new L.Varbit(options);
     }
+
+    L.FairyRings  = L.DynamicIcons.extend({
+        onAdd: function (map) { // eslint-disable-line no-unused-vars
+            if (this.options.data === undefined) {
+                throw new Error("Location of data file not given");
+            }
+
+            fetch(this.options.data).then(res => res.json())
+            .then(data => {
+                this._icon_data = this.parseData(data);
+                this._icons = {};
+                this._resetView();
+                this._update();
+
+            }).catch(console.error);
+
+        },
+
+        parseData: function (data) {
+            function average(nums) {
+                return nums.reduce((a, b) => (a + b)) / nums.length;
+            }
+            data.forEach(item => {
+                if (item.type === "TRANSPORT") {
+                    Object.assign(item, item.start)
+                }
+            });
+
+            data.forEach(item => item.key = this._tileCoordsToKey({
+                    plane: item.p ?? item.plane,
+                    x: (item.x >> 6),
+                    y:  - (item.y >> 6)
+                }));
+
+            let icon_data = {};
+            data.forEach(item => {
+                if (!(item.key in icon_data)) {
+                    icon_data[item.key] = [];
+                }
+                icon_data[item.key].push(item);
+            });
+            console.info("Parsed", data.length, "icons");
+            return icon_data;
+        },
+        createIcon: function (item) {
+            return this.createTransportIcon(item);
+        },
+
+        createTransportIcon: function (item) {
+            var icon = new L.icon({
+                iconUrl: 'images/fairy_ring.png',
+            
+                iconSize:     [28, 31], // size of the icon
+                iconAnchor:   [14,29], // point of the icon which will correspond to marker's location
+                popupAnchor:  [0,-30] // point from which the popup should open relative to the iconAnchor
+            });
+
+            let startMarker = L.marker([item.y + 0.5, item.x + 0.5], {
+                icon: icon
+            });
+
+            let popUp = this.createPopup(item.mode, this._map, item);
+            startMarker.bindPopup(popUp);
+            if ("destinations" in item) {
+                startMarker.on('mouseover', () => {
+                    item.destinations.forEach(destination => {
+                        let VertexIcon = L.DivIcon.extend({
+                            options: {
+                                iconSize: new L.Point(8, 8)
+                            }
+
+                        });
+                        var destmarker = L.marker([destination.y + 0.5, destination.x + 0.5], {
+                            icon: new VertexIcon
+                        }).addTo(this._map);
+                        setTimeout(() => this._map.removeLayer(destmarker), 1000);
+
+                        let points = [[item.start.y + 0.5, item.start.x + 0.5], [destination.y + 0.5, destination.x + 0.5]];
+
+                        let travel = L.polyline(points, {
+                            color: 'white'
+                        });
+                        this._map.addLayer(travel);
+                        setTimeout(() => this._map.removeLayer(travel), 1000);
+                        travel.on("click", () => {
+                            this._map.setPlane(destination.p);
+                            this._map.flyTo([destination.y + 0.5, destination.x + 0.5])
+                        });
+                    })
+
+                });
+
+            }
+            startMarker._item = item;
+
+            return startMarker;
+        },
+
+        createPopup: function (mode, map, item) {
+            let wrapper = document.createElement('div');
+
+            wrapper.innerHTML = `<b>FAIRY RING</b>:\n${item.fairyRingCode}`;
+            let popup = L.popup({
+                autoPan: false
+            }).setContent(wrapper);
+            return popup;
+        }
+
+    });
+
+    L.fairyRings = function (options) {
+        return new L.FairyRings(options);
+    }
+    
+    L.SpiritTrees  = L.DynamicIcons.extend({
+        onAdd: function (map) { // eslint-disable-line no-unused-vars
+            if (this.options.data === undefined) {
+                throw new Error("Location of data file not given");
+            }
+
+            fetch(this.options.data).then(res => res.json())
+            .then(data => {
+                this._icon_data = this.parseData(data);
+                this._icons = {};
+                this._resetView();
+                this._update();
+
+            }).catch(console.error);
+
+        },
+
+        parseData: function (data) {
+            function average(nums) {
+                return nums.reduce((a, b) => (a + b)) / nums.length;
+            }
+            data.forEach(item => {
+                if (item.type === "TRANSPORT") {
+                    Object.assign(item, item.start)
+                }
+            });
+
+            data.forEach(item => item.key = this._tileCoordsToKey({
+                    plane: item.p ?? item.plane,
+                    x: (item.x >> 6),
+                    y:  - (item.y >> 6)
+                }));
+
+            let icon_data = {};
+            data.forEach(item => {
+                if (!(item.key in icon_data)) {
+                    icon_data[item.key] = [];
+                }
+                icon_data[item.key].push(item);
+            });
+            console.info("Parsed", data.length, "icons");
+            return icon_data;
+        },
+        createIcon: function (item) {
+            return this.createTransportIcon(item);
+        },
+
+        createTransportIcon: function (item) {
+            var icon = new L.icon({
+                iconUrl: 'images/spirit_tree.png',
+            
+                iconSize:     [28, 31], // size of the icon
+                iconAnchor:   [15,29], // point of the icon which will correspond to marker's location
+                popupAnchor:  [0,-30] // point from which the popup should open relative to the iconAnchor
+            });
+
+            let startMarker = L.marker([item.y + 0.5, item.x + 0.5], {
+                icon: icon
+            });
+
+            let popUp = this.createPopup(item.mode, this._map, item);
+            startMarker.bindPopup(popUp);
+            if ("destinations" in item) {
+                startMarker.on('mouseover', () => {
+                    item.destinations.forEach(destination => {
+                        let VertexIcon = L.DivIcon.extend({
+                            options: {
+                                iconSize: new L.Point(8, 8)
+                            }
+
+                        });
+                        var destmarker = L.marker([destination.y + 0.5, destination.x + 0.5], {
+                            icon: new VertexIcon
+                        }).addTo(this._map);
+                        setTimeout(() => this._map.removeLayer(destmarker), 1000);
+
+                        let points = [[item.start.y + 0.5, item.start.x + 0.5], [destination.y + 0.5, destination.x + 0.5]];
+
+                        let travel = L.polyline(points, {
+                            color: 'white'
+                        });
+                        this._map.addLayer(travel);
+                        setTimeout(() => this._map.removeLayer(travel), 1000);
+                        travel.on("click", () => {
+                            this._map.setPlane(destination.p);
+                            this._map.flyTo([destination.y + 0.5, destination.x + 0.5])
+                        });
+                    })
+
+                });
+
+            }
+            startMarker._item = item;
+
+            return startMarker;
+        },
+
+        createPopup: function (mode, map, item) {
+            let wrapper = document.createElement('div');
+
+            wrapper.innerHTML = `<b>SPIRIT TREE</b>`;
+            let popup = L.popup({
+                autoPan: false
+            }).setContent(wrapper);
+            return popup;
+        }
+
+    });
+
+    L.spiritTrees = function (options) {
+        return new L.SpiritTrees(options);
+    }
+
+    L.GnomeGliders  = L.DynamicIcons.extend({
+        onAdd: function (map) { // eslint-disable-line no-unused-vars
+            if (this.options.data === undefined) {
+                throw new Error("Location of data file not given");
+            }
+
+            fetch(this.options.data).then(res => res.json())
+            .then(data => {
+                this._icon_data = this.parseData(data);
+                this._icons = {};
+                this._resetView();
+                this._update();
+
+            }).catch(console.error);
+
+        },
+
+        parseData: function (data) {
+            function average(nums) {
+                return nums.reduce((a, b) => (a + b)) / nums.length;
+            }
+            data.forEach(item => {
+                if (item.type === "TRANSPORT") {
+                    Object.assign(item, item.start)
+                }
+            });
+
+            data.forEach(item => item.key = this._tileCoordsToKey({
+                    plane: item.p ?? item.plane,
+                    x: (item.x >> 6),
+                    y:  - (item.y >> 6)
+                }));
+
+            let icon_data = {};
+            data.forEach(item => {
+                if (!(item.key in icon_data)) {
+                    icon_data[item.key] = [];
+                }
+                icon_data[item.key].push(item);
+            });
+            console.info("Parsed", data.length, "icons");
+            return icon_data;
+        },
+        createIcon: function (item) {
+            return this.createTransportIcon(item);
+        },
+
+        createTransportIcon: function (item) {
+            var icon = new L.icon({
+                iconUrl: 'images/gnome_glider.png',
+            
+                iconSize:     [28, 31], // size of the icon
+                iconAnchor:   [15,29], // point of the icon which will correspond to marker's location
+                popupAnchor:  [0,-30] // point from which the popup should open relative to the iconAnchor
+            });
+
+            let startMarker = L.marker([item.y + 0.5, item.x + 0.5], {
+                icon: icon
+            });
+
+            let popUp = this.createPopup(item.mode, this._map, item);
+            startMarker.bindPopup(popUp);
+            if ("destinations" in item) {
+                startMarker.on('mouseover', () => {
+                    item.destinations.forEach(destination => {
+                        let VertexIcon = L.DivIcon.extend({
+                            options: {
+                                iconSize: new L.Point(8, 8)
+                            }
+
+                        });
+                        var destmarker = L.marker([destination.y + 0.5, destination.x + 0.5], {
+                            icon: new VertexIcon
+                        }).addTo(this._map);
+                        setTimeout(() => this._map.removeLayer(destmarker), 1000);
+
+                        let points = [[item.start.y + 0.5, item.start.x + 0.5], [destination.y + 0.5, destination.x + 0.5]];
+
+                        let travel = L.polyline(points, {
+                            color: 'white'
+                        });
+                        this._map.addLayer(travel);
+                        setTimeout(() => this._map.removeLayer(travel), 1000);
+                        travel.on("click", () => {
+                            this._map.setPlane(destination.p);
+                            this._map.flyTo([destination.y + 0.5, destination.x + 0.5])
+                        });
+                    })
+
+                });
+
+            }
+            startMarker._item = item;
+
+            return startMarker;
+        },
+
+        createPopup: function (mode, map, item) {
+            let wrapper = document.createElement('div');
+
+            wrapper.innerHTML = `<b>GNOME GLIDER</b>`;
+            let popup = L.popup({
+                autoPan: false
+            }).setContent(wrapper);
+            return popup;
+        }
+
+    });
+
+    L.gnomeGliders = function (options) {
+        return new L.GnomeGliders(options);
+    }
+
+
 });
