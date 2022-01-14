@@ -1,6 +1,6 @@
 [submodule "layers_osrs"]
 	path = layers_osrs
-	url = https://github.com/mejrs/layers_osrs
+	url = https://github.com/deck-phil/layers_osrs
 [submodule "layers_rs3"]
 	path = layers_rs3
 	url = https://github.com/mejrs/layers_rs3
@@ -15,4 +15,4 @@
 	url = https://github.com/mejrs/data_rs3
 [submodule "data_osrs"]
 	path = data_osrs
-	url = https://github.com/mejrs/data_osrs
+	url = https://github.com/deck-phil/data_osrs
