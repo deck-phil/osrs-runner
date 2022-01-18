@@ -25,7 +25,7 @@ void function (global) {
         algorithm: wasm_pathfinder.race,
         tileUrl: 'layers_osrs/mapsquares/-1/{zoom}/{plane}_{x}_{y}.png',
         errorTileUrl: 'TODO',
-        shadowTileUrl: 'layers_osrs/nomove/-1/{zoom}/{plane}_{x}_{y}.png',
+        shadowTileUrl: 'layers_osrs/inv_area_tiles/-1/{zoom}/{plane}_{x}_{y}.png',
         shadowErrorTileUrl: 'layers_rs3/shadow_squares/shadow_tile.png',
         messageBox: true
     });
@@ -58,11 +58,11 @@ void function (global) {
         contextmenu: true,
         contextmenuWidth: 140,
         contextmenuItems: [{
-            text: 'Start here',
+            text: 'Start Route',
             callback: pathfinder.moveStartMarkerTo.bind(pathfinder)
         },
         {
-            text: 'End here',
+            text: 'End Route',
             callback: pathfinder.moveEndMarkerTo.bind(pathfinder)
         }]
 
